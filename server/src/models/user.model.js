@@ -21,6 +21,9 @@ const userSchema = new Schema({
         type: String, 
         enum: ['donor', 'ngo'], 
         default: 'donor' 
+    },
+    refreshToken: {
+        type: String
     }
 },{
     timestamps: true,
