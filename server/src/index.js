@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import { app } from './app.js'
 import { connectdb } from './db/db.js'
-import { ApiError } from './utils/ApiError';
+import { ApiError } from './utils/ApiError.js';
 
 dotenv.config();
 
