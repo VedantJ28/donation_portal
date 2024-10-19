@@ -4,6 +4,8 @@ import { User } from "../models/user.model.js";
 import { NGO } from "../models/ngo.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinaryUpload.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
+import { Donation } from "../models/donation.model.js";
+import { Donor } from "../models/donor.model.js";
 
 const resgisterNGO = asyncHandler(async (req, res) =>{
     const { username, email, password, organizationName, registrationNumber, phone, address} = req.body;
@@ -73,6 +75,43 @@ const resgisterNGO = asyncHandler(async (req, res) =>{
     );
 });
 
+const verifyDonation = asyncHandler(async (req, res) => {
+    const { donationId } = req.params;
+
+    const donation = await Donation.findById(donationId);
+
+    if(!donation){
+        throw new ApiError(404, "Donation not found");
+    }
+
+    const ngoId = await req.user.user;
+
+    if(ngoId != donation.receiverId){
+        throw new ApiError(403, "You are not authorized to verify this donation");
+    }
+
+    donation.verified = true;
+    await donation.save();
+
+    const updatedDonation = await Donation.findById(donationId);
+
+    const donor = await Donor.findById(donation.donorId);
+    const receiver = await NGO.findById(donation.receiverId);
+
+    donor.donationsMade.push(donationId);
+    receiver.donationsReceived.push(donationId);
+
+    await donor.save();
+    await receiver.save();
+
+    res.status(200).json(
+        new ApiResponse(200, updatedDonation, "Donation verified successfully")
+    );
+});
+
+
+
 export {
-    resgisterNGO
+    resgisterNGO,
+    verifyDonation
 }

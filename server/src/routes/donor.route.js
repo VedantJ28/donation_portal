@@ -11,6 +11,9 @@ donorRoutes.route('/register-donor').post(
     registerDonor
 );
 
-donorRoutes.route('/:donorId/donate').post(authMiddleware, donate);
+donorRoutes.route('/:donorId/donate').post(authMiddleware,
+    upload.fields({name: 'image', maxCount: 1}),
+    donate
+);
 
 export default donorRoutes;
