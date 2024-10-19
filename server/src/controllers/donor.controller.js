@@ -4,6 +4,7 @@ import { uploadOnCloudinary } from "../utils/cloudinaryUpload.js";
 import { User } from "../models/user.model.js";
 import { Donor } from "../models/donor.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { Donation } from "../models/donation.model.js";
 
 const registerDonor = asyncHandler(async (req, res) =>{
 
@@ -59,6 +60,49 @@ const registerDonor = asyncHandler(async (req, res) =>{
     );
 });
 
+const donate = asyncHandler(async (req, res) => {
+    const { donorId } = req.params;
+    const { receiverId, item, category, quantity } = req.body;
+
+    const donor = await Donor.findById(donorId);
+    if(!donor){
+        throw new ApiError(404, "Donor not found");
+    }
+
+    const receiver = await NGO.findById(receiverId);
+    if(!receiver){
+        throw new ApiError(404, "Receiver not found");
+    }
+
+    const imageLocalPath = req.files?.image[0]?.path;
+    if(!imageLocalPath){
+        throw new ApiError(400, "Image is required");
+    }
+
+    const image = uploadOnCloudinary(imageLocalPath);
+    if(!image){
+        throw new ApiError(500, "Image upload failed");
+    }
+
+    const donation = await Donation.create({
+        donor: donor._id,
+        receiver: receiver._id,
+        item,
+        category,
+        quantity,
+        image: image.url
+    });
+
+    if(!donation){
+        throw new ApiError(500, "Donation failed");
+    }
+
+    res.status(201).json(
+        new ApiResponse(201, "Donation added successful")
+    );
+});
+
 export {
-    registerDonor
+    registerDonor,
+    donate
 }
