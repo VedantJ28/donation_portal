@@ -91,6 +91,7 @@ const verifyDonation = asyncHandler(async (req, res) => {
     }
 
     donation.verified = true;
+    donation.recievedAt = new Date().now().toLocalString();
     await donation.save();
 
     const updatedDonation = await Donation.findById(donationId);
@@ -108,8 +109,6 @@ const verifyDonation = asyncHandler(async (req, res) => {
         new ApiResponse(200, updatedDonation, "Donation verified successfully")
     );
 });
-
-
 
 export {
     resgisterNGO,
