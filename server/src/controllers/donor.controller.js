@@ -9,17 +9,20 @@ const registerDonor = asyncHandler(async (req, res) =>{
 
     const {username , email, password, fullName, phone, address, profile} = req.body;
 
-    const existingDonor = User.find(
-        $OR[username, email]
-    );
+    const existingDonor = User.findOne({
+        $or: [
+            { username: username },
+            { email: email }
+        ]
+    });
 
     if(existingDonor){
         throw new ApiError(400, "Username or email already exists");
     }
 
-    const profileLocalPath = req.file?.profile[0]?.path;
+    const profileLocalPath = req.files?.profile[0]?.path;
 
-    if(profileLocalPath){
+    if(!profileLocalPath){
         throw new ApiError(400, 'Profile picture is required');
     }
 

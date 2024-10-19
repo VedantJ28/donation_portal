@@ -1,19 +1,16 @@
 import jwt from 'jsonwebtoken';
 import { ApiError } from '../utils/ApiError.js';
-import { verifyToken } from '../utils/jwt.js';
+import { verifyToken } from '../utils/tokenGeneration.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
 
-export const authMiddleware = (req, res, next) => {
-    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+export const authMiddleware = asyncHandler(async (req, res, next) => {
+    const token = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
     
     if (!token) {
         throw new ApiError(401, "Unauthorized, token not found");
     }
 
-    try {
-        const decoded = verifyToken(token);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        throw new ApiError(401, "Invalid or expired token");
-    }
-};
+    const decoded = await verifyToken(token);
+    req.user = decoded;
+    next();
+});

@@ -8,7 +8,7 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 const resgisterNGO = asyncHandler(async (req, res) =>{
     const { username, email, password, organizationName, registrationNumber, phone, address} = req.body;
 
-    console.log(req.body);
+    // console.log(req.body);
 
     const existingUser = await User.findOne({
         $or: [
