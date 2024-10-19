@@ -144,4 +144,4 @@ const adminLogout = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, "Admin logged out successfully"));
 });
 
-export { login, logout, adminLogin };
+export { login, logout, adminLogin, adminLogout };
