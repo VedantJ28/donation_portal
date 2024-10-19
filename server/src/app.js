@@ -17,10 +17,11 @@ app.use(cookieParser());
 //Routes import
 
 import ngoRoutes from "./routes/ngo.route.js";
+import donorRoutes from "./routes/donor.route.js";
 import {authRoutes} from "./routes/auth.route.js";    
 
-app.use("/api/ngo", ngoRoutes);
-app.use("/api/auth", authRoutes);
-
+app.use("/api/v1/ngo", ngoRoutes);
+app.use("api/v1/donor", donorRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 export { app };
