@@ -2,9 +2,9 @@ import { Router } from "express";
 import { resgisterNGO } from "../controllers/ngo.controller.js";
 import {upload} from "../middlewares/multer.middleware.js";
 
-const ngorouter = new Router();
+const ngoRoutes = new Router();
 
-ngorouter.route('/register-ngo').post(
+ngoRoutes.route('/register-ngo').post(
     upload.fields([
         {name: 'profile', maxCount: 1},
         {name: 'cover', maxCount: 1}
@@ -12,6 +12,6 @@ ngorouter.route('/register-ngo').post(
     resgisterNGO
 );
 
-export default ngorouter;
+export default ngoRoutes;
 
 

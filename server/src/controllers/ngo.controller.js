@@ -1,4 +1,4 @@
-import { asyncHandler } from "../utils/asyncHandler";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js"
 import { User } from "../models/user.model.js";
 import { NGO } from "../models/ngo.model.js";
@@ -6,16 +6,21 @@ import { uploadOnCloudinary } from "../utils/cloudinaryUpload.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 
 const resgisterNGO = asyncHandler(async (req, res) =>{
-    const { username, email, password, organizationName, registrationNumber, phone, address, profile, cover } = req.body;
+    const { username, email, password, organizationName, registrationNumber, phone, address} = req.body;
 
-    const existingUser = await User.findOne(
-        $OR[username, email]
-    );
+    console.log(req.body);
+
+    const existingUser = await User.findOne({
+        $or: [
+            { username: username },
+            { email: email }
+        ]
+    });    
     if (existingUser) {
         throw new ApiError(400, 'User already exists');
     }
 
-    const existingNGO = await NGO.find(registrationNumber);
+    const existingNGO = await NGO.findOne({registrationNumber: registrationNumber});
     if (existingNGO) {
         throw new ApiError(400, 'NGO already exists');
     }
@@ -27,7 +32,7 @@ const resgisterNGO = asyncHandler(async (req, res) =>{
         coverLocalPath = req.files.cover[0].path;
     }
 
-    if(profileLocalPath){
+    if(!profileLocalPath){
         throw new ApiError(400, 'Profile picture is required');
     }
     
@@ -39,7 +44,7 @@ const resgisterNGO = asyncHandler(async (req, res) =>{
     }
 
     const newUser = await User.create({
-        username: username.to_lower(),
+        username: username,
         email, 
         password,
         role: 'ngo'
