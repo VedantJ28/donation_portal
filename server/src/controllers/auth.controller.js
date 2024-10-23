@@ -116,7 +116,7 @@ const adminLogin = asyncHandler(async (req, res) => {
     }
 
     res.status(201)
-        .cookie('adminAccessToken', accessToken, cookieOptions)
+        .cookie('adminAccessToken', adminAccessToken, cookieOptions)
         .json(
             new ApiResponse(
                 201,
