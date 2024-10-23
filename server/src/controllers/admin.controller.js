@@ -2,6 +2,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { NGO } from "../models/ngo.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { Donor } from "../models/donor.model.js"
+import { Donation } from "../models/donation.model.js";
 
 const verifyNgo = asyncHandler(async (req, res) => {
     const { registrationNumber } = req.params;
@@ -25,4 +27,29 @@ const verifyNgo = asyncHandler(async (req, res) => {
     )
 });
 
-export { verifyNgo };
+
+const getDonors = asyncHandler(async (req, res) => {
+    const donors = await Donor.find();
+
+    res.status(200).json(
+        new ApiResponse(200, donors, "Donors retrieved successfully")
+    );
+});
+
+const getNGOs = asyncHandler(async (req, res) => {
+    const ngos = await NGO.find();
+
+    res.status(200).json(
+        new ApiResponse(200, ngos, "NGOs retrieved successfully")
+    );
+});
+
+const getDonations = asyncHandler(async (req, res) => {
+    const donations = await Donation.find();
+
+    res.status(200).json(
+        new ApiResponse(200, donations, "Donations retrieved successfully")
+    );
+});
+
+export { verifyNgo, getDonors, getNGOs, getDonations };
