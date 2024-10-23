@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {upload} from "../middlewares/multer.middleware.js"
-import { registerDonor } from "../controllers/donor.controller.js";
-import { donate } from "../controllers/donor.controller.js";
+import { registerDonor,
+    getDonations,
+    donate
+ } from "../controllers/donor.controller.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const donorRoutes = new Router();
@@ -15,5 +17,7 @@ donorRoutes.route('/:donorId/donate').post(authMiddleware,
     upload.fields({name: 'image', maxCount: 1}),
     donate
 );
+
+donorRoutes.route('/:donorId/get-donations').get(authMiddleware, getDonations);
 
 export default donorRoutes;

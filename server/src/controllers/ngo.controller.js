@@ -110,7 +110,26 @@ const verifyDonation = asyncHandler(async (req, res) => {
     );
 });
 
+const receivedDonations = asyncHandler(async (req, res) => {
+    const ngoId = req.user.user;
+
+    const ngo = await NGO.findById(ngoId);
+
+    if(!ngo){
+        throw new ApiError(404, "NGO not found");
+    }
+
+    const donations = await Donation.find({
+        receiverId: ngoId
+    }).populate('donorId', 'name email').sort({createdAt: -1});
+
+    res.status(200).json(
+        new ApiResponse(200, donations, "Donations received by NGO")
+    );
+});
+
 export {
     resgisterNGO,
-    verifyDonation
+    verifyDonation,
+    receivedDonations
 }

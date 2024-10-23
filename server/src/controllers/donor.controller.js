@@ -8,7 +8,7 @@ import { Donation } from "../models/donation.model.js";
 
 const registerDonor = asyncHandler(async (req, res) =>{
 
-    const {username , email, password, fullName, phone, address, profile} = req.body;
+    const {username , email, password, fullName, phone, address} = req.body;
 
     const existingDonor = User.findOne({
         $or: [
@@ -47,7 +47,7 @@ const registerDonor = asyncHandler(async (req, res) =>{
         profile: profileImage.url
     });
 
-    const createdDonor = Donor.findById(donar._id).select(
+    const createdDonor = Donor.findById(donor._id).select(
         "-password -refreshToken"
     );
 
@@ -102,7 +102,23 @@ const donate = asyncHandler(async (req, res) => {
     );
 });
 
+const getDonations = asyncHandler(async (req, res) => {
+    const { donorId } = req.params;
+
+    const donor = await Donor.findById(donorId);
+    if(!donor){
+        throw new ApiError(404, "Donor not found");
+    }
+
+    const donations = await Donation.find({ donor: donor._id });
+
+    res.status(200).json(
+        new ApiResponse(200, "Donations retrieved successfully", donations)
+    );
+});
+
 export {
     registerDonor,
-    donate
+    donate,
+    getDonations
 }

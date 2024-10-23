@@ -1,7 +1,8 @@
 import { Router } from "express";
 import {
     resgisterNGO,
-    verifyDonation
+    verifyDonation,
+    receivedDonations
 } from "../controllers/ngo.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
@@ -17,6 +18,7 @@ ngoRoutes.route('/register-ngo').post(
 );
 
 ngoRoutes.route('/:donationId/vefiyDonation').post(authMiddleware, verifyDonation);
+ngoRoutes.route('/received-donations').get(authMiddleware, receivedDonations);
 
 export default ngoRoutes;
 
